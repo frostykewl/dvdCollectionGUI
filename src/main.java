@@ -1,6 +1,7 @@
 
 public class main {
 	public static void main(String[] args) {
+		/* 
 		DVDCollection obj = new DVDCollection();
 		obj.loadData("dvd.txt");
 		System.out.println("Current DVD Array: " + obj.toString());
@@ -11,5 +12,12 @@ public class main {
 		obj.removeDVD("Zombieland");
 		System.out.println(obj.toString());
 		return;
+		
+		old testing main*/
+		
+		DVDCollection obj1 = new DVDCollection();
+		DVDGUI obj2 = new DVDGUI(obj1);
+
+		
 	}
 }

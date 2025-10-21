@@ -10,13 +10,12 @@ public class DVDManager {
 		
 		DVDUserInterface dlInterface;
 		DVDCollection dl = new DVDCollection();
+	
+		dl.loadData("dvd.txt");
+		dlInterface = new DVDGUI(dl);
 
-		Scanner scan = new Scanner(System.in);
 
-		System.out.println("Enter name of data file to load:");
-		String filename = scan.nextLine();			
-		dl.loadData(filename);
-
+		/*
 		System.out.println("Input interface type: C=Console, G=GUI");
 		String interfaceType = scan.nextLine();
 		if (interfaceType.equals("C")) {
@@ -28,8 +27,7 @@ public class DVDManager {
 		} else {
 			System.out.println("Unrecognized interface type. Program exiting.");
 			System.exit(0);
+		*/
 		}
-		
 	}
-
 }

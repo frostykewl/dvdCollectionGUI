@@ -1,4 +1,4 @@
-The Ring,R,17
-Scary Movie,r,12
-The Incredibles,pg,11
-Zombieland,g,29
+SCARY MOVIE,R,12
+THE INCREDIBLES,PG,120
+THE RING,R,17
+ZOMBIELAND,G,29
