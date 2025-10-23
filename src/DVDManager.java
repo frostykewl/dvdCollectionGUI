@@ -8,12 +8,11 @@ public class DVDManager {
 
 	public static void main(String[] args) {
 		
-		DVDUserInterface dlInterface;
 		DVDCollection dl = new DVDCollection();
-	
-		dl.loadData("dvd.txt");
-		dlInterface = new DVDGUI(dl);
-
+		String filename = "dvd.txt";
+		dl.loadData(filename);
+		DVDUserInterface dlInterface = new DVDGUI(dl);
+		dlInterface.processCommands();
 
 		/*
 		System.out.println("Input interface type: C=Console, G=GUI");
@@ -30,4 +29,3 @@ public class DVDManager {
 		*/
 		}
 	}
-}

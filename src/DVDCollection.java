@@ -68,25 +68,19 @@ public class DVDCollection {
 		// if not, add new entry
 		int index = findDVD(title);
 		if (index >= 0) {
-			System.out.println("DVD found at index [" + index + "], updating entry: " + dvdArray[index].toString());
 			dvdArray[index].setTitle(title);
 			dvdArray[index].setRating(rating);
 			dvdArray[index].setRunningTime(runTimeInt);
-			System.out.println("Entry [" + index + "] " + dvdArray[index].toString());
 		}
 		else {
 			if (numdvds < dvdArray.length) {
 				dvdArray[numdvds] = new DVD(title, rating, runTime);
-				System.out.println("Entry Added: [" + numdvds + "] " + dvdArray[numdvds].toString());
 				numdvds++;
 				Arrays.sort(dvdArray, 0, numdvds, new DVDTitleSort());
 			}
 			else {
-				System.out.println("Array full, doubling array size.");
 				doubleDVDArraySize();
-				System.out.println("Trying again.");
 				addOrModifyDVD(title, rating, runningTime);
-				System.out.println(toString());
 			}
 		}
 		return;
@@ -97,7 +91,6 @@ public class DVDCollection {
 		title = title.toUpperCase();
 		int index = findDVD(title);
 		if (index >= 0) {
-			System.out.println("Entry found, removing: " + title + " at index [" + index + "] \n");
 			modified = true;
 			DVD[] newArray = new DVD[dvdArray.length - 1];
 			System.arraycopy(dvdArray,  0,  newArray,  0, index);
@@ -107,7 +100,7 @@ public class DVDCollection {
 			return;
 		}
 		else {
-			System.out.println("DVD not found.");
+			return;
 		}
 	}
 	
@@ -118,9 +111,6 @@ public class DVDCollection {
 			if (dvdArray[i].getRating().equals(rating)) {
 				d += (dvdArray[i].toString() + '\n');
 			}
-		}
-		if (d.equals("")) {
-			System.out.println("No DVDs found with that rating.");
 		}
         return d;
 	}
@@ -142,7 +132,6 @@ public class DVDCollection {
 			while ((line = bRead.readLine()) != null) {
 				String[] dvdData = line.split(",");
 				if (dvdData.length < 3) {
-					System.out.println("Invalid DVD Entry in file \"" + line + "\"");
 					return;
 				}
 				addOrModifyDVD(dvdData[0], dvdData[1], dvdData[2]);
@@ -150,7 +139,6 @@ public class DVDCollection {
 			modified = false;
 		}
 		catch (Exception e) {
-			System.out.println(e);
 			this.dvdArray = new DVD[7];
 			this.numdvds = 0;
 		}
@@ -159,7 +147,6 @@ public class DVDCollection {
 	public void save() {
 		try {
 			if (!modified) {
-				System.out.println("No changes detected.");
 				return;
 			}
 			FileWriter fw = new FileWriter(sourceName);
@@ -170,7 +157,6 @@ public class DVDCollection {
 				}
 			}
 			fw.close();
-			System.out.println("File saved to " + sourceName + ".");
 			modified = false;
 		}
 		catch (IOException e) {
@@ -186,7 +172,6 @@ public class DVDCollection {
 			return true;
 		}
 		else {
-			System.out.println("Invalid movie rating: " + rating + "\n");
 			return false;
 		}
 	}
@@ -198,7 +183,7 @@ public class DVDCollection {
 			runTime = Integer.parseInt(runningTime);
 		}
 		catch (NumberFormatException e) {
-			System.out.println("Invalid runtime.");
+
 		}
 		return runTime;
 	}
