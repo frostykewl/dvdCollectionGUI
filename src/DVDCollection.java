@@ -62,6 +62,8 @@ public class DVDCollection {
 		modified = true;
 		title = title.toUpperCase();
 		rating = rating.toUpperCase();
+		int runTimeInt = Integer.parseInt(runningTime);
+		
 		// if dvd entry found, update
 		// if not, add new entry
 		int index = findDVD(title);
@@ -69,7 +71,7 @@ public class DVDCollection {
 			System.out.println("DVD found at index [" + index + "], updating entry: " + dvdArray[index].toString());
 			dvdArray[index].setTitle(title);
 			dvdArray[index].setRating(rating);
-			dvdArray[index].setRunningTime(runTime);
+			dvdArray[index].setRunningTime(runTimeInt);
 			System.out.println("Entry [" + index + "] " + dvdArray[index].toString());
 		}
 		else {
@@ -225,5 +227,30 @@ public class DVDCollection {
 		public int compare(DVD a, DVD b) {
 			return a.getTitle().compareTo(b.getTitle());
 		}
+	}
+	
+	public DVD[] getDVDArray() {
+		return dvdArray;
+	}
+	
+	private String getImage(String title) {
+		switch (title.toUpperCase()) {
+			case "THE INCREDIBLES":
+				return "THE INCREDIBLES.jpg";
+			case "NIGHT AT THE MUSEUM":
+				return "NIGHT AT THE MUSEUM.jpg";
+			case "UP":
+				return "UP.jpg";
+			default:
+					return "PLACEHOLDER.png";
+		}
+	}
+	
+	public int getNumDVDs() {
+		return numdvds;
+	}
+	
+	public DVD getDVD(int index) {
+		return dvdArray[index];
 	}
 }

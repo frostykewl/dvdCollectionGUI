@@ -1,6 +1,4 @@
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
+import java.awt.*;
 import javax.swing.*;
 
 /**
@@ -11,13 +9,12 @@ import javax.swing.*;
 public class DVDGUI implements DVDUserInterface {
 	 
 	 private DVDCollection dvdlist;
-	 private static JFrame frame;
-	 private static JPanel panel;
-	 private JList dvdJList;
-	 JScrollPane dvdListScroll;
-	 static String titleText = ("Title: ");
-	 static String ratingText = ("Rating: ");
-	 static String runTimeText = ("Runtime: ");
+	 private JFrame frame;
+	 private JList<DVD> dvdJList;
+	 private DefaultListModel<DVD> listModel;
+	 private JTextArea infoBox;
+	 private JLabel imageBox;
+	 private JComboBox<String> ratingFilter;
 
 	 
 	 public DVDGUI(DVDCollection dl)
@@ -27,76 +24,90 @@ public class DVDGUI implements DVDUserInterface {
 		 loadDVDs();
 	 }
 	 
-	 private static void createGUI() {
-		 // Create initial frame + panel
-		 frame = new JFrame("DVD GUI");
-		 frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		 JPanel listPanel = new JPanel();
-		 frame.add(listPanel);
-		 Box infoBox = Box.createVerticalBox();
-		 JLabel dvdTitleJLabel = new JLabel(titleText);
-		 JLabel dvdRatingJLabel = new JLabel(ratingText);
-		 JLabel dvdRuntimeJLabel = new JLabel(runTimeText);
-		 JLabel dvdImageJLabel = new JLabel("404 Image");
-		 infoBox.add(dvdTitleJLabel);
-		 infoBox.add(dvdRatingJLabel);
-		 infoBox.add(dvdRuntimeJLabel);
-		 infoBox.add(dvdImageJLabel);
-		 JButton modifyButton = new JButton("Modify DVD");
-		 modifyButton.addActionListener(new ActionListener() {
-			 public void actionPerformed(ActionEvent e) {
-				 try {
-					 String title = dvdlist.getDVDArray()[dvdJList.getSelectedIndex()].getTitle();
-					 doAddOrModifyDVD(title);
-				 }
-				 catch (Exception error) {
-				 } 
-			 }
+	 private void createGUI() {
+		 frame = new JFrame ("DVD Manager");
+		 frame.setLayout(new BorderLayout());
+		 listModel = new DefaultListModel<>();
+		 dvdJList = new JList<>(listModel);
+		 dvdJList.addListSelectionListener(e -> displayDVDInfo());
+		 JScrollPane listScrollPane = new JScrollPane(dvdJList);
+		 
+		 infoBox = new JTextArea();
+		 infoBox.setEditable(false);
+		 imageBox = new JLabel();
+		 imageBox.setHorizontalAlignment(JLabel.CENTER);
+		 imageBox.setPreferredSize(new Dimension(300, 200));
+		 JPanel buttonPanel = new JPanel();
+		 
+		 JButton addButton = new JButton("Add/Modify DVD");
+		 addButton.addActionListener(e -> doAddOrModifyDVD());
+		 buttonPanel.add(addButton);
+		 
+		 JButton removeButton = new JButton("Remove Selected DVD");
+		 removeButton.addActionListener(e -> doRemoveDVD());
+		 buttonPanel.add(removeButton);
+		 
+		 JButton totalRuntimeButton = new JButton("Total Run Time");
+		 totalRuntimeButton.addActionListener(e -> doGetTotalRunningTime());
+		 buttonPanel.add(totalRuntimeButton);
+		 
+		 JButton exitButton = new JButton("Exit");
+		 exitButton.addActionListener(e -> doSave());
+		 buttonPanel.add(exitButton);
+		 
+		 ratingFilter = new JComboBox<>(new String[] {
+				 "All Ratings", "PG", "PG-13", "R"
 		 });
-		 infoBox.add(modifyButton);
-		 listPanel.add(infoBox);
-		 
-		 dvdJList = new JList();
+		 ratingFilter.addActionListener(e -> filterDVDRating());
+		 buttonPanel.add(ratingFilter);
+		 frame.add(imageBox, BorderLayout.SOUTH);
+		 frame.add(buttonPanel, BorderLayout.NORTH);
+		 frame.add(listScrollPane, BorderLayout.WEST);
+		 frame.add(new JScrollPane(infoBox), BorderLayout.CENTER);
+		 frame.setVisible(true);
 	 }
 	 
-	 /* Commented out console commands
-	 public void processCommands()
-	 {
-		 String[] commands = {"Add/Modify DVD",
-				 	"Remove DVD",
-				 	"Get DVDs By Rating",
-				 	"Get Total Running Time",
-				 	"Exit and Save"};
-		 
-		 int choice;
-		 
-		 do {
-			 choice = JOptionPane.showOptionDialog(null,
-					 "Select a command", 
-					 "DVD Collection", 
-					 JOptionPane.YES_NO_CANCEL_OPTION, 
-					 JOptionPane.QUESTION_MESSAGE, 
-					 null, 
-					 commands,
-					 commands[commands.length - 1]);
-		 
-			 switch (choice) {
-			 	case 0: doAddOrModifyDVD(); break;
-			 	case 1: doRemoveDVD(); break;
-			 	case 2: doGetDVDsByRating(); break;
-			 	case 3: doGetTotalRunningTime(); break;
-			 	case 4: doSave(); break;
-			 	default:  // do nothing
-			 }
+	 private void loadDVDs() {
+		 listModel.clear();
+		 for (int i = 0; i < dvdlist.getNumDVDs(); i++) {
+			 listModel.addElement(dvdlist.getDVD(i));
+		 }
+	 }
+	 
+	 private void displayDVDInfo() {
+		 DVD selectedDVD = dvdJList.getSelectedValue();
+		 if (selectedDVD != null) {
+			 infoBox.setText("Title: " + selectedDVD.getTitle() + "/n" + "Rating: " + selectedDvd.getRating() + "/n" + "Running Time: " + selectedDVD.getRunningTime() + "min");
 			 
-		 } while (choice != commands.length-1);
-		 System.exit(0);
+			 // Load images
+			 String imagePath = selectedDVD.getImage();
+			 ImageIcon dvdImage = new ImageIcon(imagePath);
+			 imageBox.setIcon(dvdImage);
+		 }
 	 }
-	 */
 	 
-	private void doAddOrModifyDVD(String title) {
+	 private void filterDVDRating() {
+		 String selectedRating = (String) ratingFilter.getSelectedItem();
+		 listModel.clear();
+		 for (int i = 0; i < dvdlist.getNumDVDs(); i++) {
+			 DVD dvd = dvdlist.getDVD(i);
+			 if (dvd.getRating().equals(selectedRating)) {
+				 listModel.addElement(dvd);
+			 }
+		}
+		 return;
+	 }
+		 
+	/*
+	 public void processCommands() {
+		 
+	 }
+	*/
+	 
+	 
+	private void doAddOrModifyDVD() {
 		// Request the title
-		title = JOptionPane.showInputDialog("Enter title");
+		String title = JOptionPane.showInputDialog("Enter title");
 		if (title == null) {
 			return;		// dialog was cancelled
 		}
@@ -111,30 +122,30 @@ public class DVDGUI implements DVDUserInterface {
 		
 		// Request the running time
 		String time = JOptionPane.showInputDialog("Enter running time for " + title);
-		if (time == null) ;
+		if (time == null) {
+			return;
 		}
-                // Add or modify the DVD (assuming the rating and time are valid
-                dvdlist.addOrModifyDVD(title, rating, time);
-                refreshDVDJList();
-		
+		try {
+			// Add or modify the DVD (assuming the rating and time are valid
+			dvdlist.addOrModifyDVD(title, rating, time);
+			loadDVDs();
+		} catch (NumberFormatException e) {
+			JOptionPane.showMessageDialog(frame, "Invalid running time.");
+		}
 	}
 	
 	private void doRemoveDVD() {
-
 		// Request the title
 		String title = JOptionPane.showInputDialog("Enter title");
 		if (title == null) {
 			return;		// dialog was cancelled
 		}
 		title = title.toUpperCase();
-		
                 // Remove the matching DVD if found
-                dvdlist.removeDVD(title);
-                
+        dvdlist.removeDVD(title);
                 // Display current collection to the console for debugging
-                System.out.println("Removing: " + title);
-                System.out.println(dvdlist);
-
+        System.out.println("Removing: " + title);
+        System.out.println(dvdlist);
 	}
 	
 	private void doGetDVDsByRating() {
@@ -145,25 +156,20 @@ public class DVDGUI implements DVDUserInterface {
 			return;		// dialog was cancelled
 		}
 		rating = rating.toUpperCase();
-		
                 String results = dvdlist.getDVDsByRating(rating);
                 System.out.println("DVDs with rating " + rating);
                 System.out.println(results);
-
 	}
 
         private void doGetTotalRunningTime() {
-                 
                 int total = dvdlist.getTotalRunningTime();
                 System.out.println("Total Running Time of DVDs: ");
                 System.out.println(total);
-                
         }
 
 	private void doSave() {
-		
 		dvdlist.save();
-		
+		System.exit(0);
 	}
 		
 }

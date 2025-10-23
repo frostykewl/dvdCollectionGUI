@@ -7,12 +7,22 @@ public class DVD {
 	private String title;		// Title of this DVD
 	private String rating;		// Rating of this DVD
 	private int runningTime;	// Running time of this DVD in minutes
+	private String image;		// Path to DVD image;
 
+	public DVD(String dvdTitle, String dvdRating, int dvdRunningTime, String image) 
+	{
+		this.title = dvdTitle;
+		this.rating = dvdRating;
+		this.runningTime = dvdRunningTime;
+		this.image = image;
+	}
+	
 	public DVD(String dvdTitle, String dvdRating, int dvdRunningTime) 
 	{
 		this.title = dvdTitle;
 		this.rating = dvdRating;
 		this.runningTime = dvdRunningTime;
+		this.image = "PLACEHOLDER.png";
 	}
 	
 	public String getTitle() 
@@ -46,5 +56,8 @@ public class DVD {
 		return this.title + "," + this.rating + "," + this.runningTime;
 	}
 	
+	public String getImage() {
+		return image;
+	}
 	
 }
