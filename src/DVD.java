@@ -57,7 +57,7 @@ public class DVD {
 	}
 	
 	public String getImage() {
-		return image;
+		return this.title + ".jpg";
 	}
 	
 }
