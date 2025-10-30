@@ -21,6 +21,9 @@ public class DVDManager {
 		dlInterface = new DVDGUI(dl);
 
 		// Commented out console option, go staight to gui.
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 		/*
 		System.out.println("Input interface type: C=Console, G=GUI");
