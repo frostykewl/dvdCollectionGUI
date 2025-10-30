@@ -23,6 +23,7 @@ public class DVDGUI implements DVDUserInterface {
 		 loadDVDs();
 	 }
 	 
+<<<<<<< Updated upstream
 	 private void createGUI() {
 		 // Initialize GUI
 		 frame = new JFrame ("DVD Manager");
@@ -69,6 +70,33 @@ public class DVDGUI implements DVDUserInterface {
 		 
 		 ratingFilter = new JComboBox<>(new String[] {
 				 "All Ratings", "PG", "PG-13", "R"
+=======
+	 private static void createGUI() {
+		 // Create initial frame + panel
+		 frame = new JFrame("DVD GUI");
+		 frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		 JPanel listPanel = new JPanel();
+		 frame.add(listPanel);
+		 Box infoBox = Box.createVerticalBox();
+		 JLabel dvdTitleJLabel = new JLabel(titleText);
+		 JLabel dvdRatingJLabel = new JLabel(ratingText);
+		 JLabel dvdRuntimeJLabel = new JLabel(runTimeText);
+		 JLabel dvdImageJLabel = new JLabel("404 Image");
+		 infoBox.add(dvdTitleJLabel);
+		 infoBox.add(dvdRatingJLabel);
+		 infoBox.add(dvdRuntimeJLabel);
+		 infoBox.add(dvdImageJLabel);
+		 JButton modifyButton = new JButton("Modify DVD");
+		 modifyButton.addActionListener(new ActionListener() {
+			 public void actionPerformed(ActionEvent e) {
+				 try {
+					 String title = dvdlist.getDVDArray()[dvdJList.getSelectedIndex()].getTitle();
+					 doAddOrModifyDVD(title);
+				 }
+				 catch (Exception error) {
+				 }
+			 }
+>>>>>>> Stashed changes
 		 });
 		 ratingFilter.addActionListener(e -> filterDVDRating());
 		 buttonPanel.add(ratingFilter);
